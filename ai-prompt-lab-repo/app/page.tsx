@@ -98,54 +98,20 @@ export default function Page() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Bottom nav */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3">
-        <button
-          onClick={back}
-          disabled={current === 0}
-          className="px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
-          style={{
-            background: "rgba(19,19,26,0.95)",
-            border: "1px solid rgba(42,42,53,0.8)",
-            backdropFilter: "blur(12px)",
-            color: current === 0 ? "rgba(156,163,175,0.25)" : "#9CA3AF",
-            cursor: current === 0 ? "default" : "pointer",
-          }}
-        >
-          ← Back
-        </button>
-
-        {/* Dot pills */}
-        <div
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl"
-          style={{ background: "rgba(19,19,26,0.9)", border: "1px solid rgba(42,42,53,0.6)", backdropFilter: "blur(12px)" }}
-        >
-          {SLIDES.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              className="rounded-full transition-all duration-300"
-              style={{
-                width: i === current ? "20px" : "6px",
-                height: "6px",
-                background: i === current ? "#7C3AED" : "rgba(124,58,237,0.25)",
-              }}
-            />
-          ))}
-        </div>
-
-        <button
-          onClick={advance}
-          disabled={current === SLIDES.length - 1}
-          className="px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150"
-          style={{
-            background: current === SLIDES.length - 1 ? "rgba(124,58,237,0.25)" : "#7C3AED",
-            color: current === SLIDES.length - 1 ? "rgba(244,244,245,0.3)" : "#fff",
-            cursor: current === SLIDES.length - 1 ? "default" : "pointer",
-          }}
-        >
-          {nextLabel}
-        </button>
+      {/* Dot progress — top right, below slide counter */}
+      <div className="fixed top-9 right-6 z-50 flex items-center gap-1.5">
+        {SLIDES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i === current ? "16px" : "5px",
+              height: "5px",
+              background: i === current ? "#7C3AED" : "rgba(124,58,237,0.25)",
+            }}
+          />
+        ))}
       </div>
     </div>
   );

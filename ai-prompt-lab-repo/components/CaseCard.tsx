@@ -127,7 +127,7 @@ export function CaseCard({
 
           {/* QR code */}
           <div className="shrink-0">
-            <QRBlock url={fullUrl} size={90} />
+            <QRBlock url={fullUrl} size={130} />
           </div>
         </div>
 
