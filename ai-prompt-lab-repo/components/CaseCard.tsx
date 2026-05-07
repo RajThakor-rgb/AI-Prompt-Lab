@@ -4,19 +4,23 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { QRBlock } from "./QRBlock";
 
-const GRADIENTS = [
-  "linear-gradient(135deg, #7C3AED 0%, #06B6D4 100%)",
-  "linear-gradient(135deg, #06B6D4 0%, #7C3AED 100%)",
-  "linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%)",
-  "linear-gradient(135deg, #0EA5E9 0%, #8B5CF6 100%)",
+const ACCENT_COLORS = [
+  { from: "#7C3AED", to: "#06B6D4" },
+  { from: "#06B6D4", to: "#7C3AED" },
+  { from: "#8B5CF6", to: "#0EA5E9" },
+  { from: "#0EA5E9", to: "#8B5CF6" },
 ];
 
 interface CaseCardProps {
   number: string;
   team: string;
+  company: string;
+  sector: string;
   functionName: string;
   theme: string;
-  hook: string;
+  context: string;
+  challenge: string;
+  task: string;
   pdfUrl: string;
   index: number;
 }
@@ -24,24 +28,27 @@ interface CaseCardProps {
 export function CaseCard({
   number,
   team,
+  company,
+  sector,
   functionName,
-  theme,
-  hook,
+  context,
+  challenge,
+  task,
   pdfUrl,
   index,
 }: CaseCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-0.5, 0.5], [2, -2]);
-  const rotateY = useTransform(x, [-0.5, 0.5], [-2, 2]);
+  const rotateX = useTransform(y, [-0.5, 0.5], [1.5, -1.5]);
+  const rotateY = useTransform(x, [-0.5, 0.5], [-1.5, 1.5]);
 
   const [origin, setOrigin] = useState("");
-  useEffect(() => {
-    setOrigin(window.location.origin);
-  }, []);
+  useEffect(() => { setOrigin(window.location.origin); }, []);
 
   const fullUrl = origin ? `${origin}${pdfUrl}` : pdfUrl;
+  const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
+  const gradient = `linear-gradient(135deg, ${accent.from} 0%, ${accent.to} 100%)`;
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = ref.current?.getBoundingClientRect();
@@ -50,62 +57,116 @@ export function CaseCard({
     y.set((e.clientY - rect.top) / rect.height - 0.5);
   };
 
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
   return (
     <motion.div
       ref={ref}
-      className="relative rounded-2xl p-px overflow-hidden cursor-default"
-      style={{
-        background: GRADIENTS[index % GRADIENTS.length],
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-        transformPerspective: 800,
-      }}
+      className="relative rounded-2xl p-px overflow-hidden"
+      style={{ background: gradient, rotateX, rotateY, transformStyle: "preserve-3d", transformPerspective: 900 }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseLeave={() => { x.set(0); y.set(0); }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 * index, ease: [0.32, 0.72, 0, 1], duration: 0.5 }}
-      whileHover={{ scale: 1.02 }}
+      transition={{ delay: 0.08 * index, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+      whileHover={{ scale: 1.01 }}
     >
       <div
-        className="rounded-2xl p-6 h-full flex flex-col gap-4"
-        style={{ background: "#13131A" }}
+        className="rounded-2xl h-full flex flex-col"
+        style={{ background: "#0E0E16" }}
       >
-        {/* Header row */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex flex-col">
-            <span
-              className="font-bold leading-none select-none"
-              style={{ fontSize: "3.5rem", color: "rgba(244,244,245,0.07)" }}
-            >
-              {number}
-            </span>
-            <p
-              className="text-xs font-semibold uppercase tracking-widest mt-1"
-              style={{ color: "#7C3AED" }}
-            >
-              {team}
+        {/* Card header */}
+        <div
+          className="flex items-start justify-between gap-3 px-5 pt-4 pb-3"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
+        >
+          <div className="flex flex-col gap-1">
+            {/* Number + team */}
+            <div className="flex items-center gap-3">
+              <span
+                className="font-bold leading-none select-none"
+                style={{ fontSize: "2.2rem", color: "rgba(244,244,245,0.06)" }}
+              >
+                {number}
+              </span>
+              <div className="flex flex-col">
+                <span
+                  className="text-xs font-semibold uppercase tracking-widest"
+                  style={{ color: accent.from }}
+                >
+                  {team}
+                </span>
+                <span className="text-lg font-bold text-fg leading-tight">{functionName}</span>
+              </div>
+            </div>
+            {/* Company + sector */}
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="text-sm font-medium" style={{ color: "#F4F4F5" }}>{company}</span>
+              <span
+                className="text-xs px-2 py-0.5 rounded-full"
+                style={{
+                  background: `rgba(124,58,237,0.12)`,
+                  border: "1px solid rgba(124,58,237,0.2)",
+                  color: "#9CA3AF",
+                }}
+              >
+                {sector}
+              </span>
+            </div>
+          </div>
+
+          {/* QR code */}
+          <div className="shrink-0">
+            <QRBlock url={fullUrl} size={80} />
+          </div>
+        </div>
+
+        {/* Card body */}
+        <div className="flex flex-col gap-3 px-5 py-4 flex-1">
+          {/* Context */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgba(156,163,175,0.5)" }}>
+              Situation
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(244,244,245,0.75)" }}>
+              {context}
             </p>
           </div>
-          <QRBlock url={fullUrl} size={130} />
+
+          {/* Challenge */}
+          <div
+            className="rounded-xl px-4 py-3"
+            style={{
+              background: `linear-gradient(135deg, ${accent.from}18 0%, ${accent.to}08 100%)`,
+              border: `1px solid ${accent.from}25`,
+            }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: accent.from }}>
+              The challenge
+            </p>
+            <p className="text-sm leading-relaxed" style={{ color: "rgba(244,244,245,0.85)" }}>
+              {challenge}
+            </p>
+          </div>
+
+          {/* Task */}
+          <div className="mt-auto">
+            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgba(156,163,175,0.5)" }}>
+              Your task
+            </p>
+            <p className="text-sm font-medium leading-relaxed" style={{ color: "#F4F4F5" }}>
+              {task}
+            </p>
+          </div>
         </div>
 
-        {/* Body */}
-        <div className="flex-1 flex flex-col gap-1">
-          <h3 className="text-2xl font-semibold text-fg">{functionName}</h3>
-          <p className="text-sm text-muted">{theme}</p>
-          <p className="text-sm mt-2 leading-relaxed" style={{ color: "rgba(244,244,245,0.65)" }}>
-            {hook}
+        {/* Footer */}
+        <div className="px-5 pb-3 flex items-center justify-between">
+          <p className="text-xs" style={{ color: "rgba(156,163,175,0.4)" }}>
+            Scan QR to open full brief PDF
+          </p>
+          <p className="text-xs" style={{ color: "rgba(156,163,175,0.3)" }}>
+            Apply RISEN ↑
           </p>
         </div>
-
-        <p className="text-xs text-muted/60">Scan to open case PDF</p>
       </div>
     </motion.div>
   );
