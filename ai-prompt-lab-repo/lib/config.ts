@@ -1,6 +1,6 @@
 export const config = {
   // The main Microsoft Form URL teams submit prompts through
-  submissionFormUrl: "PASTE_MICROSOFT_FORM_URL_HERE",
+  submissionFormUrl: "https://forms.office.com/Pages/ResponsePage.aspx?id=8eZDEXRsh0Sw-0hOVesskAF2F0JKfTVIkUehncTWm4VUMUhRQVg5WjlSRlQxSTNNQlkyWFYxMEJIOC4u",
 
   // The four case PDF URLs (uploaded to /public/cases/ in the repo)
   cases: [
