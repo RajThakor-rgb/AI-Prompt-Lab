@@ -10,12 +10,12 @@ interface TimerProps {
 
 export function Timer({ durationSeconds }: TimerProps) {
   const [displayTime, setDisplayTime] = useState(durationSeconds);
-  const [running, setRunning] = useState(true);
+  const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
   const [flash, setFlash] = useState(false);
 
   const remainingRef = useRef(durationSeconds);
-  const runningRef = useRef(true);
+  const runningRef = useRef(false);
   const doneRef = useRef(false);
   const lastTimestampRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -93,8 +93,8 @@ export function Timer({ durationSeconds }: TimerProps) {
       lastTimestampRef.current = null;
       setDisplayTime(durationSeconds);
       setDone(false);
-      runningRef.current = true;
-      setRunning(true);
+      runningRef.current = false;
+      setRunning(false);
     }
   }, [durationSeconds]);
 
