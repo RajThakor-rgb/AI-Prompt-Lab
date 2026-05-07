@@ -111,9 +111,16 @@ export default function Page() {
     cases: <ScreenCases />,
   };
 
+  const currentIndex = SCREENS.indexOf(screen);
+  const canGoBack = currentIndex > 0 && currentIndex < 3;
+
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+      // biome-ignore lint: autofocus is intentional for keyboard control
+      autoFocus
+      className="relative min-h-screen overflow-hidden outline-none"
       style={{
         background: "#0A0A0F",
         color: "#F4F4F5",
@@ -134,6 +141,26 @@ export default function Page() {
           {screenMap[screen]}
         </motion.div>
       </AnimatePresence>
+
+      {/* Back button — screens 2 and 3 only */}
+      {canGoBack && (
+        <motion.button
+          onClick={back}
+          className="fixed bottom-8 left-8 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium z-50"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, ease: [0.32, 0.72, 0, 1] }}
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.97 }}
+          style={{
+            background: "rgba(19,19,26,0.9)",
+            border: "1px solid rgba(42,42,53,0.7)",
+            color: "#9CA3AF",
+          }}
+        >
+          ← Back
+        </motion.button>
+      )}
 
       {screen !== "cases" && (
         <NextButton onClick={advance} label={NEXT_LABELS[screen]} />
