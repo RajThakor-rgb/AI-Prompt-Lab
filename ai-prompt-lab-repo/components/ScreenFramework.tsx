@@ -46,10 +46,10 @@ const RISEN = [
 
 export function ScreenFramework() {
   return (
-    <div className="min-h-screen flex flex-col px-12 py-10">
+    <div className="min-h-screen flex flex-col px-12 py-8">
       {/* Hero */}
       <motion.div
-        className="mb-6"
+        className="mb-5"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
@@ -83,7 +83,7 @@ export function ScreenFramework() {
       </motion.div>
 
       {/* Cards */}
-      <div className="flex flex-col gap-2.5 flex-1">
+      <div className="flex flex-col gap-2 flex-1">
         {RISEN.map((card, i) => (
           <RisenCard key={card.letter} {...card} index={i} />
         ))}
