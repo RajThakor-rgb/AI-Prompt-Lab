@@ -10,27 +10,30 @@ import { ScreenExample } from "@/components/ScreenExample";
 import { ScreenSubmission } from "@/components/ScreenSubmission";
 import { ScreenCases } from "@/components/ScreenCases";
 
-type Screen = "landing" | "framework" | "example" | "submission" | "cases";
+type Screen = "landing" | "framework" | "example" | "cases" | "submission";
 
+// Cases comes before submission so teams see their brief before the form QR
 const SCREENS: Screen[] = [
   "landing",
   "framework",
   "example",
-  "submission",
   "cases",
+  "submission",
 ];
 
 const NEXT_LABELS: Record<Screen, string> = {
   landing: "Next",
   framework: "See it in action",
-  example: "Open the form",
-  submission: "Reveal Cases",
-  cases: "",
+  example: "Reveal Cases",
+  cases: "Submit Work",
+  submission: "",
 };
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("landing");
   const [cursorVisible, setCursorVisible] = useState(true);
+
+  const currentIndex = SCREENS.indexOf(screen);
 
   const advance = useCallback(() => {
     setScreen((s) => {
@@ -42,12 +45,11 @@ export default function Page() {
   const back = useCallback(() => {
     setScreen((s) => {
       const idx = SCREENS.indexOf(s);
-      if (idx >= 3) return s; // lock back on submission/cases
+      if (idx === 0) return s;
       return SCREENS[idx - 1] ?? s;
     });
   }, []);
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement).tagName;
@@ -78,7 +80,6 @@ export default function Page() {
     return () => window.removeEventListener("keydown", handler);
   }, [advance, back]);
 
-  // Cursor auto-hide on immersive screens after 3s idle
   useEffect(() => {
     const isImmersive = screen === "cases" || screen === "submission";
     if (!isImmersive) {
@@ -107,20 +108,18 @@ export default function Page() {
     landing: <ScreenLanding />,
     framework: <ScreenFramework />,
     example: <ScreenExample />,
-    submission: <ScreenSubmission />,
     cases: <ScreenCases />,
+    submission: <ScreenSubmission />,
   };
 
-  const currentIndex = SCREENS.indexOf(screen);
-  const canGoBack = currentIndex > 0 && currentIndex < 3;
+  const canGoBack = currentIndex > 0;
+  const nextLabel = NEXT_LABELS[screen];
 
   return (
     <div
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      // biome-ignore lint: autofocus is intentional for keyboard control
       autoFocus
-      className="relative min-h-screen overflow-hidden outline-none"
+      className="relative min-h-screen overflow-x-hidden outline-none"
       style={{
         background: "#0A0A0F",
         color: "#F4F4F5",
@@ -142,7 +141,6 @@ export default function Page() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Back button — screens 2 and 3 only */}
       {canGoBack && (
         <motion.button
           onClick={back}
@@ -162,11 +160,8 @@ export default function Page() {
         </motion.button>
       )}
 
-      {screen !== "cases" && (
-        <NextButton onClick={advance} label={NEXT_LABELS[screen]} />
-      )}
+      {nextLabel && <NextButton onClick={advance} label={nextLabel} />}
 
-      {/* Screen progress dots */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-50 pointer-events-none">
         {SCREENS.map((s) => (
           <div
@@ -175,8 +170,7 @@ export default function Page() {
             style={{
               width: s === screen ? "20px" : "6px",
               height: "6px",
-              background:
-                s === screen ? "#7C3AED" : "rgba(42,42,53,0.8)",
+              background: s === screen ? "#7C3AED" : "rgba(42,42,53,0.8)",
             }}
           />
         ))}
