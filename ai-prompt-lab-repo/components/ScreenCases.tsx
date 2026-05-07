@@ -15,7 +15,7 @@ export function ScreenCases() {
             Step 4 — Your Case
           </p>
           <p className="text-sm" style={{ color: "#9CA3AF" }}>
-            Read your brief. Identify the problem. Apply RISEN.
+            Read your brief. Apply RISEN.
           </p>
         </div>
 
@@ -40,10 +40,8 @@ export function ScreenCases() {
             company={c.company}
             sector={c.sector}
             functionName={c.function}
-            theme={c.theme}
-            context={c.context}
+            situation={c.situation}
             challenge={c.challenge}
-            task={c.task}
             pdfUrl={c.pdfUrl}
             index={i}
           />

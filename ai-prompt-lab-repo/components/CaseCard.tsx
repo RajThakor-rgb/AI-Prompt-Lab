@@ -17,10 +17,8 @@ interface CaseCardProps {
   company: string;
   sector: string;
   functionName: string;
-  theme: string;
-  context: string;
+  situation: string;
   challenge: string;
-  task: string;
   pdfUrl: string;
   index: number;
 }
@@ -31,9 +29,8 @@ export function CaseCard({
   company,
   sector,
   functionName,
-  context,
+  situation,
   challenge,
-  task,
   pdfUrl,
   index,
 }: CaseCardProps) {
@@ -44,7 +41,9 @@ export function CaseCard({
   const rotateY = useTransform(x, [-0.5, 0.5], [-1.5, 1.5]);
 
   const [origin, setOrigin] = useState("");
-  useEffect(() => { setOrigin(window.location.origin); }, []);
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
 
   const fullUrl = origin ? `${origin}${pdfUrl}` : pdfUrl;
   const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
@@ -61,9 +60,18 @@ export function CaseCard({
     <motion.div
       ref={ref}
       className="relative rounded-2xl p-px overflow-hidden"
-      style={{ background: gradient, rotateX, rotateY, transformStyle: "preserve-3d", transformPerspective: 900 }}
+      style={{
+        background: gradient,
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        transformPerspective: 900,
+      }}
       onMouseMove={handleMouseMove}
-      onMouseLeave={() => { x.set(0); y.set(0); }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08 * index, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
@@ -78,7 +86,7 @@ export function CaseCard({
           className="flex items-start justify-between gap-3 px-5 pt-4 pb-3"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
         >
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 flex-1">
             {/* Number + team */}
             <div className="flex items-center gap-3">
               <span
@@ -94,16 +102,20 @@ export function CaseCard({
                 >
                   {team}
                 </span>
-                <span className="text-lg font-bold text-fg leading-tight">{functionName}</span>
+                <span className="text-lg font-bold leading-tight" style={{ color: "#F4F4F5" }}>
+                  {functionName}
+                </span>
               </div>
             </div>
             {/* Company + sector */}
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-sm font-medium" style={{ color: "#F4F4F5" }}>{company}</span>
+              <span className="text-sm font-medium" style={{ color: "#F4F4F5" }}>
+                {company}
+              </span>
               <span
                 className="text-xs px-2 py-0.5 rounded-full"
                 style={{
-                  background: `rgba(124,58,237,0.12)`,
+                  background: "rgba(124,58,237,0.12)",
                   border: "1px solid rgba(124,58,237,0.2)",
                   color: "#9CA3AF",
                 }}
@@ -115,23 +127,26 @@ export function CaseCard({
 
           {/* QR code */}
           <div className="shrink-0">
-            <QRBlock url={fullUrl} size={80} />
+            <QRBlock url={fullUrl} size={90} />
           </div>
         </div>
 
         {/* Card body */}
         <div className="flex flex-col gap-3 px-5 py-4 flex-1">
-          {/* Context */}
+          {/* Situation */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgba(156,163,175,0.5)" }}>
+            <p
+              className="text-xs font-semibold uppercase tracking-wider mb-1"
+              style={{ color: "rgba(156,163,175,0.5)" }}
+            >
               Situation
             </p>
             <p className="text-sm leading-relaxed" style={{ color: "rgba(244,244,245,0.75)" }}>
-              {context}
+              {situation}
             </p>
           </div>
 
-          {/* Challenge */}
+          {/* Challenge highlighted panel */}
           <div
             className="rounded-xl px-4 py-3"
             style={{
@@ -139,32 +154,22 @@ export function CaseCard({
               border: `1px solid ${accent.from}25`,
             }}
           >
-            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: accent.from }}>
-              The challenge
+            <p
+              className="text-xs font-semibold uppercase tracking-wider mb-1"
+              style={{ color: accent.from }}
+            >
+              Challenge
             </p>
             <p className="text-sm leading-relaxed" style={{ color: "rgba(244,244,245,0.85)" }}>
               {challenge}
             </p>
           </div>
-
-          {/* Task */}
-          <div className="mt-auto">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-1" style={{ color: "rgba(156,163,175,0.5)" }}>
-              Your task
-            </p>
-            <p className="text-sm font-medium leading-relaxed" style={{ color: "#F4F4F5" }}>
-              {task}
-            </p>
-          </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 pb-3 flex items-center justify-between">
+        <div className="px-5 pb-3">
           <p className="text-xs" style={{ color: "rgba(156,163,175,0.4)" }}>
-            Scan QR to open full brief PDF
-          </p>
-          <p className="text-xs" style={{ color: "rgba(156,163,175,0.3)" }}>
-            Apply RISEN ↑
+            Scan QR to open full brief
           </p>
         </div>
       </div>
