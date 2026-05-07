@@ -25,7 +25,7 @@ export function ScreenSubmission() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ ease: [0.32, 0.72, 0, 1] }}
         >
-          Step 3 — Submit your work here
+          Step 5 — Submit your work here
         </motion.p>
 
         <motion.h2

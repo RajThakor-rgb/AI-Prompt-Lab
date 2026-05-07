@@ -3,20 +3,21 @@
 import { motion } from "framer-motion";
 import { Timer } from "./Timer";
 import { CaseCard } from "./CaseCard";
-import { FormReminderFAB } from "./FormReminderFAB";
 import { config } from "@/lib/config";
 
 export function ScreenCases() {
   return (
-    <div className="min-h-screen flex flex-col px-12 py-8 gap-5">
-      {/* Top bar: label | timer | spacer */}
+    <div className="min-h-screen flex flex-col px-10 py-6 gap-4">
+      {/* Top bar */}
       <div className="flex items-center justify-between">
-        <p
-          className="text-xs uppercase tracking-widest"
-          style={{ color: "#7C3AED" }}
-        >
-          Step 4 — Your Case
-        </p>
+        <div>
+          <p className="text-xs uppercase tracking-widest mb-1" style={{ color: "#7C3AED" }}>
+            Step 4 — Your Case
+          </p>
+          <p className="text-sm" style={{ color: "#9CA3AF" }}>
+            Read your brief. Identify the problem. Apply RISEN.
+          </p>
+        </div>
 
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -26,38 +27,28 @@ export function ScreenCases() {
           <Timer durationSeconds={config.timerDurationSeconds} />
         </motion.div>
 
-        {/* Spacer to centre timer */}
-        <div className="w-32" />
+        <div className="w-40" />
       </div>
 
       {/* 2×2 grid */}
-      <div className="grid grid-cols-2 gap-5 flex-1">
+      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0">
         {config.cases.map((c, i) => (
           <CaseCard
             key={c.team}
             number={String(i + 1).padStart(2, "0")}
             team={c.team}
+            company={c.company}
+            sector={c.sector}
             functionName={c.function}
             theme={c.theme}
-            hook={c.hook}
+            context={c.context}
+            challenge={c.challenge}
+            task={c.task}
             pdfUrl={c.pdfUrl}
             index={i}
           />
         ))}
       </div>
-
-      {/* Bottom note */}
-      <motion.p
-        className="text-sm text-center pb-2"
-        style={{ color: "#9CA3AF" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        Each team submits both prompts via the form
-      </motion.p>
-
-      <FormReminderFAB formUrl={config.submissionFormUrl} />
     </div>
   );
 }
